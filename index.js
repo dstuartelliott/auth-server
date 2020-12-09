@@ -2,7 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const { login, refreshToken, deleteToken } = require("./helpers/serverHelpers");
+const {
+  createUser,
+  login,
+  refreshToken,
+  deleteToken,
+} = require("./helpers/serverHelpers");
 
 const PORT = process.env.PORT || 31420;
 
@@ -20,6 +25,7 @@ express()
   .use(express.urlencoded({ extended: false }))
 
   // routes
+  .post("/user", createUser)
   .post("/login", login)
   .post("/token", refreshToken)
   .delete("/logout", deleteToken)

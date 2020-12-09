@@ -11,6 +11,7 @@
   "author": "Etienne Giroux <egiroux@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "assert": "^2.0.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",

@@ -16,6 +16,7 @@ You will need to add 3 secret keys to a .env file. I included an example.env, bu
 These 2 are random strings that will be used for a base to sign your tokens.
 
 They can be generated with node's crypto library, like so:
+
 require("crypto").randomBytes(64).toString("hex")
 
 You should run this line in a node terminal twice, to get 2 completely different random strings similar to this one:
@@ -54,7 +55,7 @@ This route is used when the user wants to log out on their client. This uses the
 
 The functions are in /helpers/serverHelpers.js
 
-You should make sure your login function correctly plucks the identifier out of your database user on line 24. In my case it was user.email, but it could be anything.
+You should make sure your login function correctly plucks the identifier out of your database user on line 24. It could be anything you set up in your createUser function
 
 Both tokenDb.js and userDb.js need to be configured with your mongodb database name and collection name, to retrieve your user for authentication, and to store your refresh tokens until the user logs out manually with the route /logout.
 

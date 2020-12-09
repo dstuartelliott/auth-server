@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { getUser } = require("./userDb");
+const { addUser, getUser } = require("./userDb");
 const {
   addRefreshToken,
   checkRefreshToken,
@@ -12,8 +12,43 @@ const {
 //Make sure to use a token expiration that suits your needs.
 const TOKEN_DURATION = "10m";
 
+const createUser = async (req, res) => {
+  //this route should be hit with a name and password coming from the front-end
+  const { name, password } = req.body;
+  try {
+    const returningUser = await getUser(name);
+
+    if (returningUser) {
+      res.status(400).json({
+        status: 400,
+        message: "user already exists",
+      });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = { name, password: hashedPassword };
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
+    addRefreshToken(refreshToken);
+    addUser(user);
+
+    res.status(201).send({
+      status: 201,
+      accessToken,
+      refreshToken,
+    });
+
+    return;
+  } catch (err) {
+    return res.status(500).send({ status: 500, message: err.message });
+  }
+};
+
 const login = async (req, res) => {
-  const dbUser = await getUser(req.body.username);
+  const dbUser = await getUser(req.body.name);
 
   if (!dbUser) {
     return res.status(400).send("Cannot Find User");
@@ -24,7 +59,7 @@ const login = async (req, res) => {
       // they provided the same password -- they are logged in
       //IMPORTANT
       //pluck the identifying element from that database user to create the token
-      const username = dbUser.email;
+      const username = dbUser.name;
       const user = { username };
       const accessToken = generateAccessToken(user);
       const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
@@ -83,4 +118,10 @@ const refreshToken = async (req, res) => {
   });
 };
 
-module.exports = { login, refreshToken, deleteToken };
+module.exports = {
+  createUser,
+  login,
+  refreshToken,
+  deleteToken,
+  generateAccessToken,
+};
