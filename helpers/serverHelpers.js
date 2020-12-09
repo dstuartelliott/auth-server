@@ -9,6 +9,9 @@ const {
   deleteRefreshToken,
 } = require("./tokenDb");
 
+//Make sure to use a token expiration that suits your needs.
+const TOKEN_DURATION = "10m";
+
 const login = async (req, res) => {
   const dbUser = await getUser(req.body.username);
 
@@ -19,6 +22,7 @@ const login = async (req, res) => {
   try {
     if (await bcrypt.compare(req.body.password, dbUser.password)) {
       // they provided the same password -- they are logged in
+      //IMPORTANT
       //pluck the identifying element from that database user to create the token
       const username = dbUser.email;
       const user = { username };
@@ -59,22 +63,21 @@ const deleteToken = async (req, res) => {
 };
 
 const generateAccessToken = (user) => {
-  console.log("generating access token");
+  //console.log("generating access token");
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15s",
+    expiresIn: TOKEN_DURATION,
   });
 };
 
 const refreshToken = async (req, res) => {
   const refreshToken = req.body.token;
-  console.log("freshToken start", refreshToken);
   if (refreshToken === null) return res.sendStatus(401);
   if ((await checkRefreshToken(refreshToken)) === false)
     return res.sendStatus(403);
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.status(403);
-    console.log("from refreshToken", user);
+    //console.log("from refreshToken", user);
     const accessToken = generateAccessToken({ username: user.username });
     res.status(201).json({ accessToken });
   });

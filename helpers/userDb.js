@@ -1,5 +1,6 @@
 require("dotenv").config({ path: "../.env" });
 
+//make sure to correctly identify your database name and your users collection name
 const databaseName = "";
 const usersCollectionName = "";
 

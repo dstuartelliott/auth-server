@@ -7,6 +7,7 @@ const options = {
   useUnifiedTopology: true,
 };
 
+//make sure to correctly identify your database name and your token collection name
 const databaseName = "";
 const tokensCollectionName = "";
 

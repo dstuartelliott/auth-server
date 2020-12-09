@@ -1,5 +1,4 @@
 //this file is an example that represent any other server that might have API requests, like getting posts
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -7,6 +6,22 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
+
+//the important bit to remember is this function needs to be on the API server and needs the same ACCESS_TOKEN_SECRET as the authserver
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token === null) return res.status(401).send("not authorized");
+  //console.log("token present");
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).send("invalid token");
+    //console.log("from authenticateToken", user);
+    req.user = user;
+    next();
+  });
+}
 
 const posts = [
   {
@@ -49,20 +64,3 @@ express()
   .use((req, res) => res.send("Not Found"))
 
   .listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
-//
-//this function needs to be on the API server and needs the same ACCESS_TOKEN_SECRET as the authserver
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) return res.status(401).send("not authorized");
-  //console.log("token present");
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(403).send("invalid token");
-    //console.log("from authenticateToken", user);
-    req.user = user;
-    next();
-  });
-}
