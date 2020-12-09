@@ -8,8 +8,8 @@ const options = {
 };
 
 //make sure to correctly identify your database name and your token collection name
-const databaseName = "space_trade";
-const tokensCollectionName = "test_tokens";
+const databaseName = "";
+const tokensCollectionName = "";
 
 const addRefreshToken = async (token) => {
   try {

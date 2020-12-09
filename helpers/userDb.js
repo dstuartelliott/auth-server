@@ -11,8 +11,8 @@ const options = {
 };
 
 //make sure to correctly identify your database name and your users collection name
-const databaseName = "space_trade";
-const usersCollectionName = "test_users";
+const databaseName = "";
+const usersCollectionName = "";
 
 const addUser = async (user) => {
   try {

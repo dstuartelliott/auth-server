@@ -30,7 +30,15 @@ Setting up your database is a whole other tutorial, but this is were we are retr
 
 ## Your authentication server is index.js.
 
-It contains 3 routes:
+It contains 4 routes:
+
+POST
+
+/createUser
+
+This route accepts the credentials from the front-end (name, password), only if an existing user wasn't already in the db with this username. It encrypts the password, generates an access token and a refresh token, and then calls the addUser function from the userDb.js helpers to add the user to the database if everything went well.
+
+It returns both tokens back to the client.
 
 POST
 
