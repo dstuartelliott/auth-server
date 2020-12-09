@@ -23,13 +23,13 @@ They can be generated with node's crypto library, like so:
 require("crypto").randomBytes(64).toString("hex")
 ```
 
-You should run this line in a node terminal twice, to get 2 completely different random strings similar to this one:
+Run this line in a node terminal twice, to get 2 completely different random strings similar to this one:
 
 `47b24e8ad547d0b9533372a263cba477e00a6083b2b75fbcd513af8f1eed428ee585b5a16a3fc3883a4f7360a2f9b34424a3cce6d65fa6bd2181fb542e58c6a4`
 
 3- `MONGO_URI`
 
-This is your MongoDB credentials, also should be secret.
+This is your MongoDB credentials, also needs to be kept secret.
 Setting up your database is a whole other tutorial, but this is were we are retrieving your user credentials (username, password) for authentication, and keeping the refresh tokens safe.
 
 ## Your authentication server is index.js.
@@ -63,7 +63,7 @@ Then, it sends both tokens back to the client.
 /token
 ```
 
-This route is used when the client's token is expired. The client should use the `refreshToken` with this route to recieve a new `access token` that will be valid for the duration that suits your needs.
+This route is used when the client's token is expired. The client uses the `refreshToken` in the body of the request to this route to recieve a new `access token` that will be valid for the duration specified in `constants.js`.
 
 #### DELETE
 
@@ -77,20 +77,28 @@ This route is used when the user wants to log out on their client. This uses the
 
 `Constants.js` contains variables that are used by the helper functions.
 
-Database information: you need to enter your database and collection names for your users and tokens.
+`DATABASE_NAME`
 
-Token duration: you should use a duration that suits your needs.
+`TOKENS_COLLECTION`
+
+`USERS_COLLECTION`
+
+Enter your database and collection names for your users and tokens.
+
+`TOKEN_DURATION`
+
+Use a duration that suits your needs.
 
 ## Server helper functions
 
 The functions are in `/helpers/serverHelpers.js`
 
-You should make sure your login function correctly plucks the identifier out of your database user on line 24. It could be anything you set up in your createUser function
+Make sure your login function correctly plucks the identifier out of your user from your database, to call sign it in a `token`. It could be anything you set up in your `createUser` function.
 
 ## Example API Server
 
 `apiServer.js` is purely added as an example, and contains the very important "authenticateToken" function.
 
-This function should be located on your api server and should use the same `ACCESS_TOKEN_SECRET` as your auth server.
+This function should be located on your api server and needs to use the same `ACCESS_TOKEN_SECRET` as your auth server.
 
 **This is critical, otherwise the signature on the tokens won't match!**
