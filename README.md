@@ -97,7 +97,7 @@ Make sure your login function correctly plucks the identifier out of your user f
 
 ## Example API Server
 
-`apiServer.js` is purely added as an example, and contains the very important "authenticateToken" function.
+`apiServer.js` is purely added as an example, and contains the very important `authenticateToken` function.
 
 This function should be located on your api server and needs to use the same `ACCESS_TOKEN_SECRET` as your auth server.
 
