@@ -1,18 +1,14 @@
 require("dotenv").config({ path: "../.env" });
 const assert = require("assert");
-const bcrypt = require("bcrypt");
 
 const { MongoClient } = require("mongodb");
 const { MONGO_URI } = process.env;
+const { DATABASE_NAME, USERS_COLLECTION } = require("../constants");
 
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-//make sure to correctly identify your database name and your users collection name
-const databaseName = "";
-const usersCollectionName = "";
 
 const addUser = async (user) => {
   try {
@@ -29,9 +25,9 @@ const addUser = async (user) => {
     const client = await MongoClient(MONGO_URI, options);
 
     await client.connect();
-    const db = client.db(databaseName);
+    const db = client.db(DATABASE_NAME);
 
-    const r = await db.collection(usersCollectionName).insertOne(user);
+    const r = await db.collection(USERS_COLLECTION).insertOne(user);
     assert.strictEqual(1, r.insertedCount);
 
     client.close();
@@ -47,9 +43,9 @@ const getUser = async (name) => {
     const client = await MongoClient(MONGO_URI, options);
 
     await client.connect();
-    const db = client.db(databaseName);
+    const db = client.db(DATABASE_NAME);
 
-    const user = await db.collection(usersCollectionName).findOne({ name });
+    const user = await db.collection(USERS_COLLECTION).findOne({ name });
     client.close();
 
     if (user) {

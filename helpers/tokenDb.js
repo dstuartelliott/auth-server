@@ -2,23 +2,21 @@ require("dotenv").config({ path: "../.env" });
 const { MongoClient } = require("mongodb");
 const { MONGO_URI } = process.env;
 
+const { DATABASE_NAME, TOKENS_COLLECTION } = require("../constants");
+
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-//make sure to correctly identify your database name and your token collection name
-const databaseName = "";
-const tokensCollectionName = "";
 
 const addRefreshToken = async (token) => {
   try {
     const client = await MongoClient(MONGO_URI, options);
 
     await client.connect();
-    const db = client.db(databaseName);
+    const db = client.db(DATABASE_NAME);
 
-    const r = await db.collection(tokensCollectionName).insertOne({ token });
+    const r = await db.collection(TOKENS_COLLECTION).insertOne({ token });
 
     if (r) {
       return true;
@@ -37,11 +35,9 @@ const checkRefreshToken = async (token) => {
     const client = await MongoClient(MONGO_URI, options);
 
     await client.connect();
-    const db = client.db(databaseName);
+    const db = client.db(DATABASE_NAME);
 
-    const dbToken = await db
-      .collection(tokensCollectionName)
-      .findOne({ token });
+    const dbToken = await db.collection(TOKENS_COLLECTION).findOne({ token });
     client.close();
     if (dbToken) {
       return true;
@@ -58,9 +54,9 @@ const deleteRefreshToken = async (token) => {
     const client = await MongoClient(MONGO_URI, options);
 
     await client.connect();
-    const db = client.db(databaseName);
+    const db = client.db(DATABASE_NAME);
 
-    const r = await db.collection(tokensCollectionName).deleteOne({ token });
+    const r = await db.collection(TOKENS_COLLECTION).deleteOne({ token });
 
     console.log("delete token", r.deletedCount);
 

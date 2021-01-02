@@ -9,8 +9,7 @@ const {
   deleteRefreshToken,
 } = require("./tokenDb");
 
-//Make sure to use a token expiration that suits your needs.
-const TOKEN_DURATION = "10m";
+const { TOKEN_DURATION } = require("../constants");
 
 const createUser = async (req, res) => {
   //this route should be hit with a name and password coming from the front-end
